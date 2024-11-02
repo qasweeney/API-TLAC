@@ -36,5 +36,13 @@ namespace api.Controllers
 
             return Ok(session);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Session>> CreateSession([FromBody] Session session)
+        {
+            var newSession = await sessionService.CreateSessionAsync(session);
+            return CreatedAtAction(nameof(GetSessionById), new { id = newSession.SessionID }, newSession);
+
+        }
     }
 }

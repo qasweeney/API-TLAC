@@ -36,11 +36,11 @@ namespace api.Repositories
             return await db.ExecuteQueryAsync(query, reader => new Session
             {
                 SessionID = reader.GetInt32("SessionID"),
-                DayOfWeek = reader.IsDBNull("DayOfWeek") ? null : Enum.Parse<DayOfWeek>(reader.GetString("DayOfWeek")),
+                DayOfWeek = reader.IsDBNull("DayOfWeek") ? null : reader.GetString("DayOfWeek"),
                 Date = reader.IsDBNull("Date") ? null : reader.GetDateTime("Date"),
                 StartTime = reader.GetTimeSpan("StartTime"),
-                SessionType = Enum.Parse<SessionType>(reader.GetString("SessionType")),
-                SessionStatus = Enum.Parse<SessionStatus>(reader.GetString("SessionStatus")),
+                SessionType = reader.GetString("SessionType"),
+                SessionStatus = reader.GetString("SessionStatus"),
                 Price = reader.GetDecimal("Price"),
                 TrainerID = reader.GetInt32("TrainerID"),
                 Trainer = new Trainer
@@ -100,10 +100,10 @@ namespace api.Repositories
             {
                 SessionID = reader.GetInt32("SessionID"),
                 Date = reader.IsDBNull("Date") ? (DateTime?)null : reader.GetDateTime("Date"),
-                DayOfWeek = reader.IsDBNull("DayOfWeek") ? (DayOfWeek?)null : Enum.Parse<DayOfWeek>(reader.GetString("DayOfWeek")),
+                DayOfWeek = reader.IsDBNull("DayOfWeek") ? null : reader.GetString("DayOfWeek"),
                 StartTime = reader.GetTimeSpan("StartTime"),
-                SessionType = Enum.Parse<SessionType>(reader.GetString("SessionType")),
-                SessionStatus = Enum.Parse<SessionStatus>(reader.GetString("SessionStatus")),
+                SessionType = reader.GetString("SessionType"),
+                SessionStatus = reader.GetString("SessionStatus"),
                 Price = reader.GetDecimal("Price"),
                 TrainerID = reader.GetInt32("TrainerID"),
                 MemberID = reader.IsDBNull("MemberID") ? (int?)null : reader.GetInt32("MemberID"),
@@ -138,6 +138,29 @@ namespace api.Repositories
             },
         parameters);
             return sessions.FirstOrDefault();
+        }
+
+        public async Task<Session> CreateSessionAsync(Session session)
+        {
+            var query = @"
+        INSERT INTO Session (DayOfWeek, Date, StartTime, SessionType, SessionStatus, Price, TrainerID)
+        VALUES (@DayOfWeek, @Date, @StartTime, @SessionType, @SessionStatus, @Price, @TrainerID);
+        SELECT LAST_INSERT_ID();";
+            var parameters = new[]
+            {
+                new MySqlParameter("@DayOfWeek", session.DayOfWeek),
+                new MySqlParameter("@Date", session.Date.HasValue ? session.Date.Value : DBNull.Value),
+                new MySqlParameter("@StartTime", session.StartTime),
+                new MySqlParameter("@SessionType", session.SessionType),
+                new MySqlParameter("@SessionStatus", session.SessionStatus),
+                new MySqlParameter("@Price", session.Price),
+                new MySqlParameter("@TrainerID", session.TrainerID)
+            };
+
+            var sessionId = Convert.ToInt32(await db.ExecuteScalarAsync(query, parameters));
+            session.SessionID = sessionId;
+
+            return session;
         }
     }
 }
