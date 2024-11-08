@@ -1,4 +1,5 @@
 using api.Data;
+using api.Models;
 using api.Repositories;
 using api.Services;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,9 @@ builder.Services.AddSingleton(new Database(connectionString));
 // Register each repository as scoped
 builder.Services.AddScoped<SessionRepository>();
 builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<TrainerRepository>();
+builder.Services.AddScoped<ITrainerService, TrainerService>();
+
 
 
 var app = builder.Build();

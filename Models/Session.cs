@@ -18,7 +18,6 @@ namespace api.Models
         public Trainer? Trainer { get; set; }
         public int? MemberID { get; set; }
         public Member? Member { get; set; }
-        public int? RatingID { get; set; }
-        public Rating? Rating { get; set; }
+        public decimal? Rating { get; set; }
     }
 }

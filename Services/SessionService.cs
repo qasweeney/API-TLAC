@@ -30,5 +30,9 @@ namespace api.Services
         {
             return await sr.CreateSessionAsync(session);
         }
+
+        // public async Task<Session> UpdateSessionAsync(Session session){
+        //     return await sr.
+        // }
     }
 }

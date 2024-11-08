@@ -17,7 +17,7 @@ namespace api.Repositories
         {
             var query = @"
             SELECT s.SessionID, s.DayOfWeek, s.Date, s.StartTime, s.SessionType, s.SessionStatus, 
-                s.Price, s.TrainerID, s.MemberID,
+                s.Price, s.TrainerID, s.MemberID, s.Rating,
                 t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
                 t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
                 t.RegistrationDate AS Trainer_RegistrationDate, 
@@ -25,12 +25,10 @@ namespace api.Repositories
                 m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
-                m.Phone AS Member_Phone,
-                r.RatingID, r.RatingValue
+                m.Phone AS Member_Phone
             FROM session s
             LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
-            LEFT JOIN Member m ON s.MemberID = m.MemberID
-            LEFT JOIN Rating r ON s.SessionID = r.SessionID";
+            LEFT JOIN Member m ON s.MemberID = m.MemberID";
 
 
             return await db.ExecuteQueryAsync(query, reader => new Session
@@ -63,13 +61,7 @@ namespace api.Repositories
                     RegistrationDate = reader.GetDateTime("Member_RegistrationDate"),
                     Phone = reader.GetString("Member_Phone")
                 },
-                RatingID = reader.IsDBNull("RatingID") ? null : reader.GetInt32("RatingID"),
-                Rating = reader.IsDBNull("RatingID") ? null : new Rating
-                {
-                    RatingID = reader.GetInt32("RatingID"),
-                    RatingValue = reader.GetDecimal("RatingValue"),
-                    SessionID = reader.GetInt32("SessionID")
-                }
+                Rating = reader.IsDBNull("Rating") ? null : reader.GetDecimal("Rating")
             });
         }
 
@@ -77,7 +69,7 @@ namespace api.Repositories
         {
             var query = @"
             SELECT s.SessionID, s.DayOfWeek, s.Date, s.StartTime, s.SessionType, s.SessionStatus, 
-                s.Price, s.TrainerID, s.MemberID,
+                s.Price, s.TrainerID, s.MemberID, s.Rating,
                 t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
                 t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
                 t.RegistrationDate AS Trainer_RegistrationDate, 
@@ -85,12 +77,10 @@ namespace api.Repositories
                 m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
-                m.Phone AS Member_Phone,
-                r.RatingID, r.RatingValue, r.SessionID AS Rating_SessionID
+                m.Phone AS Member_Phone
             FROM session s
             LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
             LEFT JOIN Member m ON s.MemberID = m.MemberID
-            LEFT JOIN Rating r ON s.SessionID = r.SessionID
             WHERE s.SessionID = @SessionID";
 
             var parameters = new MySqlParameter[]{
@@ -128,13 +118,14 @@ namespace api.Repositories
                     RegistrationDate = reader.GetDateTime("Member_RegistrationDate"),
                     Phone = reader.GetString("Member_Phone")
                 },
-                RatingID = reader.IsDBNull("RatingID") ? null : reader.GetInt32("RatingID"),
-                Rating = reader.IsDBNull("RatingID") ? null : new Rating
-                {
-                    RatingID = reader.GetInt32("RatingID"),
-                    RatingValue = reader.GetDecimal("RatingValue"),
-                    SessionID = reader.GetInt32("SessionID")
-                }
+                Rating = reader.IsDBNull("Rating") ? null : reader.GetDecimal("Rating")
+                // RatingID = reader.IsDBNull("RatingID") ? null : reader.GetInt32("RatingID"),
+                // Rating = reader.IsDBNull("RatingID") ? null : new Rating
+                // {
+                //     RatingID = reader.GetInt32("RatingID"),
+                //     RatingValue = reader.GetDecimal("RatingValue"),
+                //     SessionID = reader.GetInt32("SessionID")
+                // }
             },
         parameters);
             return sessions.FirstOrDefault();
@@ -162,5 +153,9 @@ namespace api.Repositories
 
             return session;
         }
+
+        // public async Task<bool> UpdateSessionAsync(Session session){
+
+        // }
     }
 }
