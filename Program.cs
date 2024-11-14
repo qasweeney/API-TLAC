@@ -36,6 +36,11 @@ builder.Services.AddScoped<SessionRepository>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<TrainerRepository>();
 builder.Services.AddScoped<ITrainerService, TrainerService>();
+builder.Services.AddScoped<MemberRepository>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<AdminRepository>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 
 
