@@ -20,5 +20,15 @@ namespace api.Services
         {
             return await tr.GetAllTrainersAsync();
         }
+
+        public async Task<List<Trainer>> GetPendingTrainersAsync()
+        {
+            return await tr.GetPendingTrainersAsync();
+        }
+
+        public async Task<Trainer> ApprovePendingTrainerAsync(int trainerId)
+        {
+            return await tr.ApprovePendingTrainerAsync(trainerId);
+        }
     }
 }

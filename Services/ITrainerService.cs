@@ -9,5 +9,10 @@ namespace api.Services
     public interface ITrainerService
     {
         Task<List<Trainer>> GetAllTrainersAsync();
+
+        Task<List<Trainer>> GetPendingTrainersAsync();
+
+        Task<Trainer> ApprovePendingTrainerAsync(int trainerId);
+
     }
 }

@@ -14,10 +14,12 @@ namespace api.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminService adminService;
+        private readonly ITrainerService trainerService;
 
-        public AdminController(IAdminService admnServ)
+        public AdminController(IAdminService admnServ, ITrainerService trainerServ)
         {
             adminService = admnServ;
+            trainerService = trainerServ;
         }
 
         [HttpGet]
@@ -25,6 +27,19 @@ namespace api.Controllers
         {
             var admins = await adminService.GetAllAdminsAsync();
             return Ok(admins);
+        }
+
+        [HttpGet("applications")]
+        public async Task<ActionResult<List<Trainer>>> GetTrainerApplications()
+        {
+            var trainers = await trainerService.GetPendingTrainersAsync();
+            return Ok(trainers);
+        }
+        [HttpPut("applications/approve/{id}")]
+        public async Task<ActionResult<Trainer>> ApproveTrainerApplication([FromRoute] int id)
+        {
+            var trainer = await trainerService.ApprovePendingTrainerAsync(id);
+            return Ok(trainer);
         }
     }
 }
