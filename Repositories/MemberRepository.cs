@@ -44,5 +44,24 @@ namespace api.Repositories
             }, parameters);
             return member.FirstOrDefault();
         }
+
+        public async Task<Member?> GetMemberByIdAsync(int id)
+        {
+            var query = "SELECT * FROM member WHERE MemberID = @id";
+            var parameters = new[]{
+                new MySqlParameter("@id", id)
+            };
+            var member = await db.ExecuteQueryAsync(query, reader => new Member
+            {
+                MemberID = reader.GetInt32("MemberID"),
+                Email = reader.GetString("Email"),
+                RegistrationDate = reader.GetDateTime("RegistrationDate"),
+                FirstName = reader.GetString("FirstName"),
+                LastName = reader.GetString("LastName"),
+                Phone = reader.GetString("Phone"),
+                Password = ""
+            }, parameters);
+            return member.FirstOrDefault();
+        }
     }
 }

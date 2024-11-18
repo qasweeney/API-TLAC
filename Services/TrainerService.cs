@@ -30,5 +30,10 @@ namespace api.Services
         {
             return await tr.ApprovePendingTrainerAsync(trainerId);
         }
+
+        public async Task<Trainer?> GetTrainerByIdAsync(int id)
+        {
+            return await tr.GetTrainerByIdAsync(id);
+        }
     }
 }

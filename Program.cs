@@ -13,16 +13,35 @@ var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("OpenPolicy",
-    builder =>
+    options.AddPolicy("ReactAppPolicy", policy =>
     {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        policy.WithOrigins("http://localhost:3000") // Use your React app's URL
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials(); // Allow cookies
     });
 });
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("OpenPolicy", policy =>
+//     {
+//         policy.WithOrigins("http://localhost:3000")
+//               .AllowAnyMethod()
+//               .AllowAnyHeader()
+//               .AllowCredentials();
+//     });
+
+//     // options.AddPolicy("OpenPolicy",
+//     // builder =>
+//     // {
+//     //     builder.AllowAnyOrigin()
+//     //            .AllowAnyMethod()
+//     //            .AllowAnyHeader();
+//     // });
+// });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -57,9 +76,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseCors("ReactAppPolicy");
 
-app.UseCors("OpenPolicy");
+app.UseAuthorization();
 
 app.MapControllers();
 

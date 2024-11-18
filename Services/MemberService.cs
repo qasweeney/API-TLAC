@@ -20,5 +20,10 @@ namespace api.Services
         {
             return await mr.GetAllMembersAsync();
         }
+
+        public async Task<Member?> GetMemberByIdAsync(int id)
+        {
+            return await mr.GetMemberByIdAsync(id);
+        }
     }
 }

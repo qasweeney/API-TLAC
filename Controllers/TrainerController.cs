@@ -26,5 +26,11 @@ namespace api.Controllers
             var trainers = await trainerService.GetAllTrainersAsync();
             return Ok(trainers);
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Trainer>> GetTrainerById(int id)
+        {
+            var trainer = await trainerService.GetTrainerByIdAsync(id);
+            return Ok(trainer);
+        }
     }
 }

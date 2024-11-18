@@ -15,11 +15,13 @@ namespace api.Controllers
     {
         private readonly IAdminService adminService;
         private readonly ITrainerService trainerService;
+        private readonly IAuthService authService;
 
-        public AdminController(IAdminService admnServ, ITrainerService trainerServ)
+        public AdminController(IAdminService admnServ, ITrainerService trainerServ, IAuthService authServ)
         {
             adminService = admnServ;
             trainerService = trainerServ;
+            authService = authServ;
         }
 
         [HttpGet]
@@ -38,7 +40,29 @@ namespace api.Controllers
         [HttpPut("applications/approve/{id}")]
         public async Task<ActionResult<Trainer>> ApproveTrainerApplication([FromRoute] int id)
         {
+            if (!Request.Cookies.TryGetValue("SessionToken", out var sessionToken))
+            {
+                return Unauthorized("Session token missing.");
+            }
+
+            var user = await authService.ValidateTokenAsync(sessionToken);
+            if (user == null || user.Value.userType != "Admin")
+            {
+                return Unauthorized("Invalid session token or insufficient permissions.");
+            }
+
             var trainer = await trainerService.ApprovePendingTrainerAsync(id);
+            return Ok(trainer);
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Trainer>> GetAdminById(int id)
+        {
+            var trainer = await adminService.GetAdminByIdAsync(id);
+            if (trainer == null)
+            {
+                return NotFound();
+            }
+
             return Ok(trainer);
         }
     }

@@ -18,5 +18,10 @@ namespace api.Services
         {
             return await ar.GetAllAdminsAsnyc();
         }
+
+        public async Task<Admin?> GetAdminByIdAsync(int id)
+        {
+            return await ar.GetAdminByIdAsync(id);
+        }
     }
 }

@@ -25,6 +25,17 @@ namespace api.Controllers
             var members = await memberService.GetAllMembersAsync();
             return Ok(members);
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Member>> GetMemberById(int id)
+        {
+            var member = await memberService.GetMemberByIdAsync(id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(member);
+        }
 
     }
 }

@@ -9,5 +9,7 @@ namespace api.Services
     public interface IMemberService
     {
         Task<List<Member>> GetAllMembersAsync();
+
+        Task<Member?> GetMemberByIdAsync(int it);
     }
 }

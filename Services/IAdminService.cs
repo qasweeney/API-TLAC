@@ -9,5 +9,8 @@ namespace api.Services
     public interface IAdminService
     {
         Task<List<Admin>> GetAllAdminsAsync();
+
+        Task<Admin?> GetAdminByIdAsync(int id);
+
     }
 }

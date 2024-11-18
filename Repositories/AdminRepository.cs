@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using api.Data;
 using api.Models;
+using Microsoft.VisualBasic;
 using MySqlConnector;
 
 namespace api.Repositories
@@ -39,6 +40,23 @@ namespace api.Repositories
                 LastName = reader.GetString("LastName"),
                 Email = reader.GetString("Email"),
                 Password = reader.GetString("Password")
+            }, parameters);
+            return admin.FirstOrDefault();
+        }
+
+        public async Task<Admin?> GetAdminByIdAsync(int id)
+        {
+            var query = "SELECT * FROM admin WHERE AdminId = @id";
+            var parameters = new[]{
+                new MySqlParameter("@id", id)
+            };
+            var admin = await db.ExecuteQueryAsync(query, reader => new Admin
+            {
+                AdminID = reader.GetInt32("AdminID"),
+                FirstName = reader.GetString("FirstName"),
+                LastName = reader.GetString("LastName"),
+                Email = reader.GetString("Email"),
+                Password = ""
             }, parameters);
             return admin.FirstOrDefault();
         }

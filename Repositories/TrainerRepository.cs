@@ -25,7 +25,7 @@ namespace api.Repositories
                 LastName = reader.GetString("LastName"),
                 Email = reader.GetString("Email"),
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
-                Password = reader.GetString("Password"),
+                Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
                 Phone = reader.GetString("Phone")
             });
@@ -60,7 +60,7 @@ namespace api.Repositories
                 LastName = reader.GetString("LastName"),
                 Email = reader.GetString("Email"),
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
-                Password = reader.GetString("Password"),
+                Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
                 Phone = reader.GetString("Phone")
             }, []);
@@ -85,12 +85,36 @@ namespace api.Repositories
                 LastName = reader.GetString("LastName"),
                 Email = reader.GetString("Email"),
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
-                Password = reader.GetString("Password"),
+                Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
                 Phone = reader.GetString("Phone")
             }, parameters);
             // System.Console.WriteLine(trainer);
             return trainers.FirstOrDefault();
+        }
+
+        public async Task<Trainer?> GetTrainerByIdAsync(int id)
+        {
+            string query = "SELECT * FROM trainer WHERE TrainerID = @id";
+            var parameters = new[]{
+                new MySqlParameter("@id", id)
+            };
+
+
+
+            var trainer = await db.ExecuteQueryAsync(query, reader => new Trainer
+            {
+                TrainerID = reader.GetInt32("TrainerID"),
+                FirstName = reader.GetString("FirstName"),
+                LastName = reader.GetString("LastName"),
+                Email = reader.GetString("Email"),
+                RegistrationDate = reader.GetDateTime("RegistrationDate"),
+                Password = "",
+                SessionPrice = reader.GetDecimal("SessionPrice"),
+                Phone = reader.GetString("Phone")
+            }, parameters);
+
+            return trainer.FirstOrDefault();
         }
     }
 }

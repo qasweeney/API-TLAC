@@ -13,6 +13,8 @@ namespace api.Services
         Task<List<Trainer>> GetPendingTrainersAsync();
 
         Task<Trainer> ApprovePendingTrainerAsync(int trainerId);
+        Task<Trainer?> GetTrainerByIdAsync(int id);
+
 
     }
 }
