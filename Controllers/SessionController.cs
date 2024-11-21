@@ -44,5 +44,11 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetSessionById), new { id = newSession.SessionID }, newSession);
 
         }
+        [HttpGet("trainer/{trainerId}")]
+        public async Task<ActionResult<List<Session>>> GetSessionsByTrainerId(int trainerId)
+        {
+            var sessions = await sessionService.GetSessionsByTrainerIdAsync(trainerId);
+            return Ok(sessions);
+        }
     }
 }

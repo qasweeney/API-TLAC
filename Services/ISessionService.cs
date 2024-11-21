@@ -11,6 +11,8 @@ namespace api.Services
         Task<List<Session>> GetAllSessionsAsync();
         Task<Session?> GetSessionByIdAsync(int id);
         Task<Session> CreateSessionAsync(Session session);
+        Task<List<Session>> GetSessionsByTrainerIdAsync(int id);
+
         // Task<Session> UpdateSessionAsync(int id, Session updatedSession);
         // Task<bool> DeleteSessionAsync(int id);
     }

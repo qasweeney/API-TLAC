@@ -31,6 +31,11 @@ namespace api.Services
             return await sr.CreateSessionAsync(session);
         }
 
+        public async Task<List<Session>> GetSessionsByTrainerIdAsync(int id)
+        {
+            return await sr.GetSessionsByTrainerIdAsync(id);
+        }
+
         // public async Task<Session> UpdateSessionAsync(Session session){
         //     return await sr.
         // }
