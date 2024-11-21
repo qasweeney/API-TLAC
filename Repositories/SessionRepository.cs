@@ -213,8 +213,134 @@ namespace api.Repositories
             return sessions;
         }
 
-        // public async Task<bool> UpdateSessionAsync(Session session){
+        public async Task<List<Session>> SessionSearchAsync(DateTime date, TimeSpan? time)
+        {
+            var query = @"
+    SELECT s.SessionID, s.DayOfWeek, s.Date, s.StartTime, s.SessionType, s.SessionStatus, 
+        s.Price, s.TrainerID, s.MemberID, s.Rating,
+        t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
+        t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
+        t.RegistrationDate AS Trainer_RegistrationDate, 
+        t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
+        m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
+        m.LastName AS Member_LastName, m.Email AS Member_Email,
+        m.RegistrationDate AS Member_RegistrationDate, 
+        m.Phone AS Member_Phone
+    FROM session s
+    LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
+    LEFT JOIN Member m ON s.MemberID = m.MemberID
+    WHERE 
+        (s.Date = @Date OR (s.Date IS NULL AND s.DayOfWeek = @DayOfWeek))
+        AND (@Time IS NULL OR s.StartTime = @Time)";
 
-        // }
+            string dayOfWeek = date.DayOfWeek.ToString();
+
+            var parameters = new[]
+            {
+                new MySqlParameter("@Date", date),
+                new MySqlParameter("@DayOfWeek", dayOfWeek),
+                new MySqlParameter("@Time", time.HasValue ? (object)time.Value : DBNull.Value)
+            };
+
+            var sessions = await db.ExecuteQueryAsync(query, reader => new Session
+            {
+                SessionID = reader.GetInt32("SessionID"),
+                Date = reader.IsDBNull("Date") ? (DateTime?)null : reader.GetDateTime("Date"),
+                DayOfWeek = reader.IsDBNull("DayOfWeek") ? null : reader.GetString("DayOfWeek"),
+                StartTime = reader.GetTimeSpan("StartTime"),
+                SessionType = reader.GetString("SessionType"),
+                SessionStatus = reader.GetString("SessionStatus"),
+                Price = reader.GetDecimal("Price"),
+                TrainerID = reader.GetInt32("TrainerID"),
+                MemberID = reader.IsDBNull("MemberID") ? (int?)null : reader.GetInt32("MemberID"),
+
+                Trainer = new Trainer
+                {
+                    TrainerID = reader.GetInt32("Trainer_TrainerID"),
+                    FirstName = reader.GetString("Trainer_FirstName"),
+                    LastName = reader.GetString("Trainer_LastName"),
+                    Email = reader.GetString("Trainer_Email"),
+                    RegistrationDate = reader.GetDateTime("Trainer_RegistrationDate"),
+                    SessionPrice = reader.GetDecimal("Trainer_SessionPrice"),
+                    Phone = reader.GetString("Trainer_Phone")
+                },
+
+                Member = reader.IsDBNull("Member_MemberID") ? null : new Member
+                {
+                    MemberID = reader.GetInt32("Member_MemberID"),
+                    FirstName = reader.GetString("Member_FirstName"),
+                    LastName = reader.GetString("Member_LastName"),
+                    Email = reader.GetString("Member_Email"),
+                    RegistrationDate = reader.GetDateTime("Member_RegistrationDate"),
+                    Phone = reader.GetString("Member_Phone")
+                },
+                Rating = reader.IsDBNull("Rating") ? null : reader.GetDecimal("Rating")
+            }, parameters);
+
+            return sessions;
+        }
+
+        public async Task<bool> RegisterMemberForSessionAsync(int sessionId, int memberId, DateTime? date)
+        {
+            var session = await GetSessionByIdAsync(sessionId);
+            if (session == null)
+            {
+                return false;
+            }
+            if (session.Date == null)
+            {
+                var query = @"
+                    INSERT INTO session (DayOfWeek, Date, StartTime, SessionType, SessionStatus, Price, TrainerID, MemberID, Rating)
+                    SELECT DayOfWeek, @Date, StartTime, SessionType, @SessionStatus, Price, TrainerID, @MemberID, Rating
+                    FROM session
+                    WHERE SessionID = @SessionID";
+
+                var parameters = new[]
+                {
+                    new MySqlParameter("@SessionID", sessionId),
+                    new MySqlParameter("@Date", date),
+                    new MySqlParameter("@MemberID", memberId),
+                    new MySqlParameter("@SessionStatus", "Registered")
+                };
+
+                var rowsInserted = await db.ExecuteNonQueryAsync(query, parameters);
+
+                return rowsInserted > 0;
+            }
+            else
+            {
+                var updateQuery = @"
+                    UPDATE session
+                    SET MemberID = @MemberID, SessionStatus = @NewStatus
+                    WHERE SessionID = @SessionID AND MemberID IS NULL";
+
+                var updateParameters = new[]
+                {
+                    new MySqlParameter("@SessionID", sessionId),
+                    new MySqlParameter("@MemberID", memberId),
+                    new MySqlParameter("@NewStatus", "Registered")
+                };
+
+                var rowsUpdated = await db.ExecuteNonQueryAsync(updateQuery, updateParameters);
+
+                return rowsUpdated > 0;
+            }
+            // var query = @"
+            //     UPDATE session
+            //     SET MemberID = @MemberID, SessionStatus = @NewStatus
+            //     WHERE SessionID = @SessionID AND MemberID IS NULL";
+
+            // var parameters = new[]
+            // {
+            //     new MySqlParameter("@SessionID", sessionId),
+            //     new MySqlParameter("@MemberID", memberId),
+            //     new MySqlParameter("@NewStatus", "Registered")
+            // };
+
+            // var rowsAffected = await db.ExecuteNonQueryAsync(query, parameters);
+
+            // return rowsAffected > 0;
+        }
+
     }
 }

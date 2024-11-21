@@ -50,5 +50,19 @@ namespace api.Controllers
             var sessions = await sessionService.GetSessionsByTrainerIdAsync(trainerId);
             return Ok(sessions);
         }
+
+        [HttpPost("search")]
+        public async Task<ActionResult<List<Session>>> SessionSearch([FromBody] SessionSearch request)
+        {
+            var sessions = await sessionService.SessionSearchAsync(request);
+            return Ok(sessions);
+        }
+        [HttpPut("register")]
+        public async Task<ActionResult> RegisterMemberForSession(RegisterSessionRequest request)
+        {
+            // System.Console.WriteLine(request.Date);
+            var success = await sessionService.RegisterMemberForSessionAsync(request.SessionID, request.MemberID, request.Date);
+            return Ok(success);
+        }
     }
 }
