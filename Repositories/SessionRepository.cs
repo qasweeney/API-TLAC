@@ -213,33 +213,41 @@ namespace api.Repositories
             return sessions;
         }
 
-        public async Task<List<Session>> SessionSearchAsync(DateTime date, TimeSpan? time)
+        public async Task<List<Session>> SessionSearchAsync(DateTime date, TimeSpan? time, bool availableOnly)
         {
             var query = @"
-    SELECT s.SessionID, s.DayOfWeek, s.Date, s.StartTime, s.SessionType, s.SessionStatus, 
-        s.Price, s.TrainerID, s.MemberID, s.Rating,
-        t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
-        t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
-        t.RegistrationDate AS Trainer_RegistrationDate, 
-        t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
-        m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
-        m.LastName AS Member_LastName, m.Email AS Member_Email,
-        m.RegistrationDate AS Member_RegistrationDate, 
-        m.Phone AS Member_Phone
-    FROM session s
-    LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
-    LEFT JOIN Member m ON s.MemberID = m.MemberID
-    WHERE 
-        (s.Date = @Date OR (s.Date IS NULL AND s.DayOfWeek = @DayOfWeek))
-        AND (@Time IS NULL OR s.StartTime = @Time)";
+                SELECT s.SessionID, s.DayOfWeek, s.Date, s.StartTime, s.SessionType, s.SessionStatus, 
+                    s.Price, s.TrainerID, s.MemberID, s.Rating,
+                    t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
+                    t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
+                    t.RegistrationDate AS Trainer_RegistrationDate, 
+                    t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
+                    m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
+                    m.LastName AS Member_LastName, m.Email AS Member_Email,
+                    m.RegistrationDate AS Member_RegistrationDate, 
+                    m.Phone AS Member_Phone
+                FROM session s
+                LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
+                LEFT JOIN Member m ON s.MemberID = m.MemberID
+                WHERE 
+                    (s.Date = @Date OR (s.Date IS NULL AND s.DayOfWeek = @DayOfWeek))
+                    AND (@Time IS NULL OR s.StartTime = @Time)
+                    AND (@AvailableOnly = 0 
+                        OR (s.SessionStatus = 'Available' AND s.MemberID IS NULL 
+                            AND NOT EXISTS (
+                                SELECT 1 
+                                FROM session r 
+                                WHERE r.ParentSessionID = s.SessionID AND r.Date = @Date
+                            )))";
 
             string dayOfWeek = date.DayOfWeek.ToString();
-
+            System.Console.WriteLine(dayOfWeek);
             var parameters = new[]
             {
                 new MySqlParameter("@Date", date),
                 new MySqlParameter("@DayOfWeek", dayOfWeek),
-                new MySqlParameter("@Time", time.HasValue ? (object)time.Value : DBNull.Value)
+                new MySqlParameter("@Time", time.HasValue ? (object)time.Value : DBNull.Value),
+                new MySqlParameter("@AvailableOnly", availableOnly)
             };
 
             var sessions = await db.ExecuteQueryAsync(query, reader => new Session
@@ -290,8 +298,8 @@ namespace api.Repositories
             if (session.Date == null)
             {
                 var query = @"
-                    INSERT INTO session (DayOfWeek, Date, StartTime, SessionType, SessionStatus, Price, TrainerID, MemberID, Rating)
-                    SELECT DayOfWeek, @Date, StartTime, SessionType, @SessionStatus, Price, TrainerID, @MemberID, Rating
+                    INSERT INTO session (DayOfWeek, Date, StartTime, SessionType, SessionStatus, Price, TrainerID, MemberID, Rating, ParentSessionID)
+                    SELECT DayOfWeek, @Date, StartTime, SessionType, @SessionStatus, Price, TrainerID, @MemberID, Rating, @SessionID
                     FROM session
                     WHERE SessionID = @SessionID";
 

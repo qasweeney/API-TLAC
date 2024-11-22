@@ -40,7 +40,7 @@ namespace api.Services
         {
             DateTime date = DateTime.Parse(request.Date);
             TimeSpan? time = string.IsNullOrEmpty(request.Time) ? null : TimeSpan.Parse(request.Time);
-            return await sr.SessionSearchAsync(date, time);
+            return await sr.SessionSearchAsync(date, time, request.AvailableOnly);
         }
 
         public async Task<bool> RegisterMemberForSessionAsync(int sessionId, int memberId, DateTime? date)
