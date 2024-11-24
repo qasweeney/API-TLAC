@@ -51,6 +51,13 @@ namespace api.Controllers
             return Ok(sessions);
         }
 
+        [HttpGet("member/{memberId}")]
+        public async Task<ActionResult<List<Session>>> GetSessionsByMemberId(int memberId)
+        {
+            var sessions = await sessionService.GetSessionsByMemberIdAsync(memberId);
+            return Ok(sessions);
+        }
+
         [HttpPost("search")]
         public async Task<ActionResult<List<Session>>> SessionSearch([FromBody] SessionSearch request)
         {
@@ -62,6 +69,13 @@ namespace api.Controllers
         {
             // System.Console.WriteLine(request.Date);
             var success = await sessionService.RegisterMemberForSessionAsync(request.SessionID, request.MemberID, request.Date);
+            return Ok(success);
+        }
+
+        [HttpPut("rating")]
+        public async Task<ActionResult> EditSessionRating([FromBody] EditSessionRating ratingRequest)
+        {
+            var success = await sessionService.EditSessionRatingAsync(ratingRequest.Rating, ratingRequest.SessionID);
             return Ok(success);
         }
     }

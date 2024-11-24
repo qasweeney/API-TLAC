@@ -36,6 +36,16 @@ namespace api.Services
             return await sr.GetSessionsByTrainerIdAsync(id);
         }
 
+        public async Task<List<Session>> GetSessionsByMemberIdAsync(int id)
+        {
+            return await sr.GetSessionsByMemberIdAsync(id);
+        }
+
+        public async Task<Session> EditSessionRatingAsync(decimal rating, int sessionId)
+        {
+            return await sr.EditSessionRatingAsync(rating, sessionId);
+        }
+
         public async Task<List<Session>> SessionSearchAsync(SessionSearch request)
         {
             DateTime date = DateTime.Parse(request.Date);
