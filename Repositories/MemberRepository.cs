@@ -63,5 +63,26 @@ namespace api.Repositories
             }, parameters);
             return member.FirstOrDefault();
         }
+        public async Task<bool> RegisterMemberAsync(Member member)
+        {
+            var query = @"
+        INSERT INTO Member (Email, RegistrationDate, Password, FirstName, LastName, Phone)
+        VALUES (@Email, @RegistrationDate, @Password, @FirstName, @LastName, @Phone);
+        SELECT LAST_INSERT_ID();";
+            var parameters = new[]
+            {
+                new MySqlParameter("@Email", member.Email),
+                new MySqlParameter("@RegistrationDate", member.RegistrationDate),
+                new MySqlParameter("@Password", member.Password),
+                new MySqlParameter("@FirstName", member.FirstName),
+                new MySqlParameter("@LastName", member.LastName),
+                new MySqlParameter("@Phone", member.Phone)
+            };
+
+            var result = await db.ExecuteNonQueryAsync(query, parameters);
+
+
+            return result > 0;
+        }
     }
 }

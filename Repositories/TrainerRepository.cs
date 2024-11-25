@@ -111,7 +111,8 @@ namespace api.Repositories
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
                 Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
-                Phone = reader.GetString("Phone")
+                Phone = reader.GetString("Phone"),
+                IsActive = reader.GetInt16("Active")
             }, parameters);
 
             return trainer.FirstOrDefault();

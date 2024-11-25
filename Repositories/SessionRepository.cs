@@ -300,7 +300,6 @@ namespace api.Repositories
                             )))";
 
             string dayOfWeek = date.DayOfWeek.ToString();
-            System.Console.WriteLine(dayOfWeek);
             var parameters = new[]
             {
                 new MySqlParameter("@Date", date),

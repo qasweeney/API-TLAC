@@ -11,5 +11,7 @@ namespace api.Services
         Task<List<Member>> GetAllMembersAsync();
 
         Task<Member?> GetMemberByIdAsync(int it);
+        Task<bool> RegisterMemberAsync(Member member);
+
     }
 }

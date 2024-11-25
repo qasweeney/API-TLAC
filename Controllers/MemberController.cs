@@ -36,6 +36,12 @@ namespace api.Controllers
 
             return Ok(member);
         }
+        [HttpPost("register")]
+        public async Task<ActionResult<bool>> MemberRegister([FromBody] Member member)
+        {
+            bool result = await memberService.RegisterMemberAsync(member);
+            return result;
 
+        }
     }
 }

@@ -15,5 +15,6 @@ namespace api.Models
         public string Password { get; set; }
         public decimal? SessionPrice { get; set; }
         public string Phone { get; set; }
+        public int? IsActive { get; set; }
     }
 }

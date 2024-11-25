@@ -25,5 +25,9 @@ namespace api.Services
         {
             return await mr.GetMemberByIdAsync(id);
         }
+        public async Task<bool> RegisterMemberAsync(Member member)
+        {
+            return await mr.RegisterMemberAsync(member);
+        }
     }
 }
