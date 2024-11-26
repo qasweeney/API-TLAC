@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using api.Models;
 using api.Repositories;
@@ -46,6 +47,16 @@ namespace api.Services
             return await sr.EditSessionRatingAsync(rating, sessionId);
         }
 
+        public async Task<bool> EditScheduleRemoveAsync(int sessionId)
+        {
+            return await sr.EditScheduleRemoveAsync(sessionId);
+        }
+
+        public async Task<bool> EditScheduleAddAsync(AddRecurring recurring)
+        {
+            return await sr.EditScheduleAddAsync(recurring);
+        }
+
         public async Task<List<Session>> SessionSearchAsync(SessionSearch request)
         {
             DateTime date = DateTime.Parse(request.Date);
@@ -56,6 +67,11 @@ namespace api.Services
         public async Task<bool> RegisterMemberForSessionAsync(int sessionId, int memberId, DateTime? date)
         {
             return await sr.RegisterMemberForSessionAsync(sessionId, memberId, date);
+        }
+
+        public async Task<List<ScheduleEntry>> GetTrainerScheduleAsync(int trainerID)
+        {
+            return await sr.GetTrainerScheduleAsync(trainerID);
         }
 
         // public async Task<Session> UpdateSessionAsync(Session session){

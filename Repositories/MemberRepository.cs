@@ -14,7 +14,7 @@ namespace api.Repositories
 
         public async Task<List<Member>> GetAllMembersAsync()
         {
-            var query = @"SELECT * FROM member";
+            var query = @"SELECT * FROM Member";
             return await db.ExecuteQueryAsync(query, reader => new Member
             {
                 MemberID = reader.GetInt32("MemberID"),
@@ -28,7 +28,7 @@ namespace api.Repositories
         }
         public async Task<Member?> GetMemberByEmailAsync(string email)
         {
-            var query = "SELECT * FROM member WHERE Email = @Email";
+            var query = "SELECT * FROM Member WHERE Email = @Email";
             var parameters = new[]{
                 new MySqlParameter("@Email", email)
             };
@@ -47,7 +47,7 @@ namespace api.Repositories
 
         public async Task<Member?> GetMemberByIdAsync(int id)
         {
-            var query = "SELECT * FROM member WHERE MemberID = @id";
+            var query = "SELECT * FROM Member WHERE MemberID = @id";
             var parameters = new[]{
                 new MySqlParameter("@id", id)
             };

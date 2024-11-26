@@ -16,7 +16,7 @@ namespace api.Repositories
 
         public async Task<List<Trainer>> GetAllTrainersAsync()
         {
-            var query = @"SELECT * FROM trainer";
+            var query = @"SELECT * FROM Trainer";
 
             return await db.ExecuteQueryAsync(query, reader => new Trainer
             {
@@ -32,7 +32,7 @@ namespace api.Repositories
         }
         public async Task<Trainer?> GetTrainerByEmailAsync(string email)
         {
-            var query = "SELECT * FROM trainer WHERE Email = @Email";
+            var query = "SELECT * FROM Trainer WHERE Email = @Email";
             var parameters = new[]{
                 new MySqlParameter("@Email", email)
             };
@@ -52,7 +52,7 @@ namespace api.Repositories
 
         public async Task<List<Trainer>> GetPendingTrainersAsync()
         {
-            var query = "SELECT * FROM trainer WHERE Active = 0";
+            var query = "SELECT * FROM Trainer WHERE Active = 0";
             var trainers = await db.ExecuteQueryAsync(query, reader => new Trainer
             {
                 TrainerID = reader.GetInt32("TrainerID"),
@@ -95,7 +95,7 @@ namespace api.Repositories
 
         public async Task<Trainer?> GetTrainerByIdAsync(int id)
         {
-            string query = "SELECT * FROM trainer WHERE TrainerID = @id";
+            string query = "SELECT * FROM Trainer WHERE TrainerID = @id";
             var parameters = new[]{
                 new MySqlParameter("@id", id)
             };

@@ -67,7 +67,6 @@ namespace api.Controllers
         [HttpPut("register")]
         public async Task<ActionResult> RegisterMemberForSession(RegisterSessionRequest request)
         {
-            // System.Console.WriteLine(request.Date);
             var success = await sessionService.RegisterMemberForSessionAsync(request.SessionID, request.MemberID, request.Date);
             return Ok(success);
         }
@@ -77,6 +76,26 @@ namespace api.Controllers
         {
             var success = await sessionService.EditSessionRatingAsync(ratingRequest.Rating, ratingRequest.SessionID);
             return Ok(success);
+        }
+
+        [HttpPut("edit-schedule/remove/{sessionID}")]
+        public async Task<ActionResult> EditScheduleRemove(int sessionID)
+        {
+            var success = await sessionService.EditScheduleRemoveAsync(sessionID);
+            return Ok(success);
+        }
+        [HttpPost("edit-schedule/add")]
+        public async Task<ActionResult> EditScheduleAdd([FromBody] AddRecurring recurring)
+        {
+            var success = await sessionService.EditScheduleAddAsync(recurring);
+            return Ok(success);
+        }
+
+        [HttpGet("schedule/{trainerID}")]
+        public async Task<ActionResult> GetTrainerSchedule(int trainerID)
+        {
+            var schedule = await sessionService.GetTrainerScheduleAsync(trainerID);
+            return Ok(schedule);
         }
     }
 }

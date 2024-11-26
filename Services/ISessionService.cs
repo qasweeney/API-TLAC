@@ -16,7 +16,13 @@ namespace api.Services
         Task<Session> EditSessionRatingAsync(decimal rating, int sessionId);
 
         Task<List<Session>> SessionSearchAsync(SessionSearch request);
+        Task<bool> EditScheduleRemoveAsync(int sessionId);
+        Task<bool> EditScheduleAddAsync(AddRecurring recurring);
+
         Task<bool> RegisterMemberForSessionAsync(int sessionId, int memberId, DateTime? date);
+
+        Task<List<ScheduleEntry>> GetTrainerScheduleAsync(int trainerID);
+
         // Task<Session> UpdateSessionAsync(int id, Session updatedSession);
         // Task<bool> DeleteSessionAsync(int id);
     }

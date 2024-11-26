@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using api.Data;
 using api.Models;
@@ -26,7 +27,7 @@ namespace api.Repositories
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
                 m.Phone AS Member_Phone
-            FROM session s
+            FROM Session s
             LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
             LEFT JOIN Member m ON s.MemberID = m.MemberID";
 
@@ -78,7 +79,7 @@ namespace api.Repositories
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
                 m.Phone AS Member_Phone
-            FROM session s
+            FROM Session s
             LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
             LEFT JOIN Member m ON s.MemberID = m.MemberID
             WHERE s.SessionID = @SessionID";
@@ -167,7 +168,7 @@ namespace api.Repositories
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
                 m.Phone AS Member_Phone
-            FROM session s
+            FROM Session s
             LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
             LEFT JOIN Member m ON s.MemberID = m.MemberID
             WHERE s.TrainerID = @TrainerID";
@@ -226,7 +227,7 @@ namespace api.Repositories
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
                 m.Phone AS Member_Phone
-            FROM session s
+            FROM Session s
             LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
             LEFT JOIN Member m ON s.MemberID = m.MemberID
             WHERE s.MemberID = @MemberID";
@@ -285,7 +286,7 @@ namespace api.Repositories
                     m.LastName AS Member_LastName, m.Email AS Member_Email,
                     m.RegistrationDate AS Member_RegistrationDate, 
                     m.Phone AS Member_Phone
-                FROM session s
+                FROM Session s
                 LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
                 LEFT JOIN Member m ON s.MemberID = m.MemberID
                 WHERE 
@@ -295,7 +296,7 @@ namespace api.Repositories
                         OR (s.SessionStatus = 'Available' AND s.MemberID IS NULL 
                             AND NOT EXISTS (
                                 SELECT 1 
-                                FROM session r 
+                                FROM Session r 
                                 WHERE r.ParentSessionID = s.SessionID AND r.Date = @Date
                             )))";
 
@@ -346,6 +347,31 @@ namespace api.Repositories
             return sessions;
         }
 
+        public async Task<bool> EditScheduleRemoveAsync(int sessionId)
+        {
+            var query = "DELETE FROM Session WHERE SessionID=@SessionId";
+            var parameters = new[]{
+                new MySqlParameter("@SessionId", sessionId)
+            };
+            var response = await db.ExecuteNonQueryAsync(query, parameters);
+            return response > 0;
+        }
+
+        public async Task<bool> EditScheduleAddAsync(AddRecurring recurring)
+        {
+            var query = @"INSERT INTO Session (DayOfWeek, StartTime, SessionType, SessionStatus, Price, TrainerID)
+                VALUES (@DayOfWeek, @StartTime, 'Recurring', 'Available', @Price, @TrainerID)";
+            var parameters = new[]{
+                new MySqlParameter("@DayOfWeek", recurring.DayOfWeek),
+                new MySqlParameter("@StartTime", recurring.StartTime),
+                new MySqlParameter("@Price", recurring.Price),
+                new MySqlParameter("@TrainerID", recurring.TrainerId)
+            };
+
+            var response = await db.ExecuteNonQueryAsync(query, parameters);
+            return response > 0;
+        }
+
         public async Task<bool> RegisterMemberForSessionAsync(int sessionId, int memberId, DateTime? date)
         {
             var session = await GetSessionByIdAsync(sessionId);
@@ -356,7 +382,7 @@ namespace api.Repositories
             if (session.Date == null)
             {
                 var query = @"
-                    INSERT INTO session (DayOfWeek, Date, StartTime, SessionType, SessionStatus, Price, TrainerID, MemberID, Rating, ParentSessionID)
+                    INSERT INTO Session (DayOfWeek, Date, StartTime, SessionType, SessionStatus, Price, TrainerID, MemberID, Rating, ParentSessionID)
                     SELECT DayOfWeek, @Date, StartTime, SessionType, @SessionStatus, Price, TrainerID, @MemberID, Rating, @SessionID
                     FROM session
                     WHERE SessionID = @SessionID";
@@ -408,7 +434,7 @@ namespace api.Repositories
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
                 m.Phone AS Member_Phone
-            FROM session s
+            FROM Session s
             LEFT JOIN Trainer t ON s.TrainerID = t.TrainerID
             LEFT JOIN Member m ON s.MemberID = m.MemberID
             WHERE s.SessionID = @SessionID";
@@ -459,6 +485,26 @@ namespace api.Repositories
             // var rowsInserted = await db.ExecuteNonQueryAsync(query, parameters);
 
             // return rowsInserted > 0;
+        }
+
+        public async Task<List<ScheduleEntry>> GetTrainerScheduleAsync(int trainerId)
+        {
+            var query = "SELECT * FROM Session WHERE TrainerID=@TrainerID AND Date is null AND SessionStatus='Available'";
+            var parameters = new[]{
+                new MySqlParameter("@TrainerID", trainerId),
+                new MySqlParameter("@Date", null),
+                new MySqlParameter("@SessionStatus", "Available")
+            };
+
+            var scheduleEntries = await db.ExecuteQueryAsync(query, reader => new ScheduleEntry
+            {
+                TrainerID = reader.GetInt16("TrainerID"),
+                SessionID = reader.GetInt16("SessionID"),
+                DayOfWeek = reader.GetString("DayOfWeek"),
+                StartTime = reader.GetTimeSpan("StartTime")
+            }, parameters);
+
+            return scheduleEntries;
         }
 
         // var query = @"
