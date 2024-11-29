@@ -27,7 +27,9 @@ namespace api.Repositories
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
                 Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
-                Phone = reader.GetString("Phone")
+                Phone = reader.GetString("Phone"),
+                Bio = reader.GetString("TrainerBio"),
+                ProfilePic = reader.GetString("TrainerPic")
             });
         }
         public async Task<Trainer?> GetTrainerByEmailAsync(string email)
@@ -45,7 +47,9 @@ namespace api.Repositories
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
                 Password = reader.GetString("Password"),
                 SessionPrice = reader.GetDecimal("SessionPrice"),
-                Phone = reader.GetString("Phone")
+                Phone = reader.GetString("Phone"),
+                Bio = reader.GetString("TrainerBio"),
+                ProfilePic = reader.GetString("TrainerPic")
             }, parameters);
             return trainer.FirstOrDefault();
         }
@@ -62,7 +66,9 @@ namespace api.Repositories
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
                 Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
-                Phone = reader.GetString("Phone")
+                Phone = reader.GetString("Phone"),
+                Bio = reader.GetString("TrainerBio"),
+                ProfilePic = reader.GetString("TrainerPic")
             }, []);
 
             return trainers;
@@ -87,7 +93,9 @@ namespace api.Repositories
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
                 Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
-                Phone = reader.GetString("Phone")
+                Phone = reader.GetString("Phone"),
+                Bio = reader.GetString("TrainerBio"),
+                ProfilePic = reader.GetString("TrainerPic")
             }, parameters);
             // System.Console.WriteLine(trainer);
             return trainers.FirstOrDefault();
@@ -112,10 +120,34 @@ namespace api.Repositories
                 Password = "",
                 SessionPrice = reader.GetDecimal("SessionPrice"),
                 Phone = reader.GetString("Phone"),
+                Bio = reader.GetString("TrainerBio"),
+                ProfilePic = reader.GetString("TrainerPic"),
                 IsActive = reader.GetInt16("Active")
             }, parameters);
 
             return trainer.FirstOrDefault();
+        }
+
+        public async Task<Trainer> UpdateTrainerProfileAsync(int id, string bio, string profilePic)
+        {
+            string updateQuery = "UPDATE Trainer SET TrainerBio=@Bio, TrainerPic=@Pic WHERE TrainerID=@ID";
+            if (bio == null)
+            {
+                updateQuery = "UPDATE Trainer SET TrainerPic=@Pic WHERE TrainerID=@ID";
+            }
+            else if (profilePic == null)
+            {
+                updateQuery = "UPDATE Trainer SET TrainerBio=@Bio WHERE TrainerID=@ID";
+            }
+
+            var parameters = new[]{
+                new MySqlParameter("@Bio", bio),
+                new MySqlParameter("@Pic", profilePic),
+                new MySqlParameter("@ID", id)
+            };
+            await db.ExecuteNonQueryAsync(updateQuery, parameters);
+            var trainer = await GetTrainerByIdAsync(id);
+            return trainer;
         }
     }
 }

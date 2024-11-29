@@ -32,5 +32,13 @@ namespace api.Controllers
             var trainer = await trainerService.GetTrainerByIdAsync(id);
             return Ok(trainer);
         }
+
+        [HttpPut("{id}/profile")]
+        public async Task<ActionResult> UpdateTrainerProfile(TrainerProfileUpdate profileUpdate, int id)
+        {
+            //FINISH UPDATETRAINERPROFILE TO ALLOW NULL ARGUMENTS!
+            var result = await trainerService.UpdateTrainerProfileAsync(id, profileUpdate.Bio, profileUpdate.ProfilePic);
+            return Ok(result);
+        }
     }
 }
