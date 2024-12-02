@@ -36,8 +36,13 @@ namespace api.Controllers
         [HttpPut("{id}/profile")]
         public async Task<ActionResult> UpdateTrainerProfile(TrainerProfileUpdate profileUpdate, int id)
         {
-            //FINISH UPDATETRAINERPROFILE TO ALLOW NULL ARGUMENTS!
             var result = await trainerService.UpdateTrainerProfileAsync(id, profileUpdate.Bio, profileUpdate.ProfilePic);
+            return Ok(result);
+        }
+        [HttpGet("{id}/average-rating")]
+        public async Task<ActionResult<decimal>> GetTrainerAverageRating(int id)
+        {
+            var result = await trainerService.GetTrainerAverageRatingAsync(id);
             return Ok(result);
         }
     }

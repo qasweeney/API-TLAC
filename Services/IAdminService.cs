@@ -11,6 +11,7 @@ namespace api.Services
         Task<List<Admin>> GetAllAdminsAsync();
 
         Task<Admin?> GetAdminByIdAsync(int id);
+        Task<AdminKPIResponse> GetAdminKPIAsync(AdminKPIRequest request);
 
     }
 }

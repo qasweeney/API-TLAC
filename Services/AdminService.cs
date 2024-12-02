@@ -23,5 +23,11 @@ namespace api.Services
         {
             return await ar.GetAdminByIdAsync(id);
         }
+        public async Task<AdminKPIResponse> GetAdminKPIAsync(AdminKPIRequest request)
+        {
+            DateOnly startDate = request.StartDate;
+            DateOnly endDate = request.EndDate;
+            return await ar.GetAdminKPIAsync(startDate, endDate);
+        }
     }
 }

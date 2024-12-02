@@ -149,5 +149,20 @@ namespace api.Repositories
             var trainer = await GetTrainerByIdAsync(id);
             return trainer;
         }
+
+        public async Task<decimal> GetTrainerAverageRatingAsync(int id)
+        {
+            string query = @"SELECT AVG(rating) AS average_rating FROM Session WHERE trainerid = @ID";
+            var parameters = new[]{
+                new MySqlParameter("@ID", id)
+            };
+            var avg = await db.ExecuteScalarAsync(query, parameters);
+            // System.Console.WriteLine(avg);
+            if (avg == DBNull.Value)
+            {
+                return 0;
+            }
+            return (decimal)avg;
+        }
     }
 }

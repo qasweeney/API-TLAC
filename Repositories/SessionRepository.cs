@@ -22,7 +22,7 @@ namespace api.Repositories
                 t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
                 t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
                 t.RegistrationDate AS Trainer_RegistrationDate, 
-                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
+                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone, t.TrainerBio AS Trainer_Bio, t.TrainerPic AS Trainer_Pic,
                 m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
@@ -50,7 +50,9 @@ namespace api.Repositories
                     Email = reader.GetString("Trainer_Email"),
                     RegistrationDate = reader.GetDateTime("Trainer_RegistrationDate"),
                     SessionPrice = reader.GetDecimal("Trainer_SessionPrice"),
-                    Phone = reader.GetString("Trainer_Phone")
+                    Phone = reader.GetString("Trainer_Phone"),
+                    Bio = reader.GetString("Trainer_Bio"),
+                    ProfilePic = reader.GetString("Trainer_Pic")
                 },
                 MemberID = reader.IsDBNull("MemberID") ? null : reader.GetInt32("MemberID"),
                 Member = reader.IsDBNull("Member_MemberID") ? null : new Member
@@ -74,7 +76,7 @@ namespace api.Repositories
                 t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
                 t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
                 t.RegistrationDate AS Trainer_RegistrationDate, 
-                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
+                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone, t.TrainerBio AS Trainer_Bio, t.TrainerPic AS Trainer_Pic,
                 m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
@@ -107,7 +109,9 @@ namespace api.Repositories
                     Email = reader.GetString("Trainer_Email"),
                     RegistrationDate = reader.GetDateTime("Trainer_RegistrationDate"),
                     SessionPrice = reader.GetDecimal("Trainer_SessionPrice"),
-                    Phone = reader.GetString("Trainer_Phone")
+                    Phone = reader.GetString("Trainer_Phone"),
+                    Bio = reader.GetString("Trainer_Bio"),
+                    ProfilePic = reader.GetString("Trainer_Pic")
                 },
 
                 Member = reader.IsDBNull("Member_MemberID") ? null : new Member
@@ -163,7 +167,7 @@ namespace api.Repositories
                 t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
                 t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
                 t.RegistrationDate AS Trainer_RegistrationDate, 
-                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
+                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone, t.TrainerBio AS Trainer_Bio, t.TrainerPic AS Trainer_Pic,
                 m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
@@ -196,7 +200,9 @@ namespace api.Repositories
                     Email = reader.GetString("Trainer_Email"),
                     RegistrationDate = reader.GetDateTime("Trainer_RegistrationDate"),
                     SessionPrice = reader.GetDecimal("Trainer_SessionPrice"),
-                    Phone = reader.GetString("Trainer_Phone")
+                    Phone = reader.GetString("Trainer_Phone"),
+                    Bio = reader.GetString("Trainer_Bio"),
+                    ProfilePic = reader.GetString("Trainer_Pic")
                 },
 
                 Member = reader.IsDBNull("Member_MemberID") ? null : new Member
@@ -222,7 +228,7 @@ namespace api.Repositories
                 t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
                 t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
                 t.RegistrationDate AS Trainer_RegistrationDate, 
-                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
+                t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone, t.TrainerBio AS Trainer_Bio, t.TrainerPic AS Trainer_Pic,
                 m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
                 m.LastName AS Member_LastName, m.Email AS Member_Email,
                 m.RegistrationDate AS Member_RegistrationDate, 
@@ -255,7 +261,9 @@ namespace api.Repositories
                     Email = reader.GetString("Trainer_Email"),
                     RegistrationDate = reader.GetDateTime("Trainer_RegistrationDate"),
                     SessionPrice = reader.GetDecimal("Trainer_SessionPrice"),
-                    Phone = reader.GetString("Trainer_Phone")
+                    Phone = reader.GetString("Trainer_Phone"),
+                    Bio = reader.GetString("Trainer_Bio"),
+                    ProfilePic = reader.GetString("Trainer_Pic")
                 },
 
                 Member = reader.IsDBNull("Member_MemberID") ? null : new Member
@@ -281,7 +289,7 @@ namespace api.Repositories
                     t.TrainerID AS Trainer_TrainerID, t.FirstName AS Trainer_FirstName, 
                     t.LastName AS Trainer_LastName, t.Email AS Trainer_Email,
                     t.RegistrationDate AS Trainer_RegistrationDate, 
-                    t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone,
+                    t.SessionPrice AS Trainer_SessionPrice, t.Phone AS Trainer_Phone, t.TrainerBio AS Trainer_Bio, t.TrainerPic AS Trainer_Pic,
                     m.MemberID AS Member_MemberID, m.FirstName AS Member_FirstName, 
                     m.LastName AS Member_LastName, m.Email AS Member_Email,
                     m.RegistrationDate AS Member_RegistrationDate, 
@@ -329,7 +337,9 @@ namespace api.Repositories
                     Email = reader.GetString("Trainer_Email"),
                     RegistrationDate = reader.GetDateTime("Trainer_RegistrationDate"),
                     SessionPrice = reader.GetDecimal("Trainer_SessionPrice"),
-                    Phone = reader.GetString("Trainer_Phone")
+                    Phone = reader.GetString("Trainer_Phone"),
+                    Bio = reader.GetString("Trainer_Bio"),
+                    ProfilePic = reader.GetString("Trainer_Pic")
                 },
 
                 Member = reader.IsDBNull("Member_MemberID") ? null : new Member

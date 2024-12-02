@@ -40,5 +40,10 @@ namespace api.Services
         {
             return await tr.UpdateTrainerProfileAsync(id, bio, profilePic);
         }
+
+        public async Task<decimal> GetTrainerAverageRatingAsync(int id)
+        {
+            return await tr.GetTrainerAverageRatingAsync(id);
+        }
     }
 }

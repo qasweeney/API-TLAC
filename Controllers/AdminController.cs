@@ -65,5 +65,11 @@ namespace api.Controllers
 
             return Ok(trainer);
         }
+        [HttpPost("kpi")]
+        public async Task<ActionResult<AdminKPIResponse>> GetAdminKPI(AdminKPIRequest request)
+        {
+            var response = await adminService.GetAdminKPIAsync(request);
+            return Ok(response);
+        }
     }
 }
