@@ -29,5 +29,10 @@ namespace api.Services
         {
             return await mr.RegisterMemberAsync(member);
         }
+
+        public async Task<bool> BanMemberAsync(int id)
+        {
+            return await mr.BanMemberAsync(id);
+        }
     }
 }

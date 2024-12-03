@@ -12,6 +12,6 @@ namespace api.Services
 
         Task<Member?> GetMemberByIdAsync(int it);
         Task<bool> RegisterMemberAsync(Member member);
-
+        Task<bool> BanMemberAsync(int id);
     }
 }

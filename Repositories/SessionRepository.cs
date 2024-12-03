@@ -68,6 +68,25 @@ namespace api.Repositories
             });
         }
 
+        public async Task<bool> SessionUnregisterAsync(int id)
+        {
+            var query = @"UPDATE Session
+                SET MemberID = NULL,
+                    SessionStatus = 'Available'
+                WHERE SessionID = @SessionID AND ParentSessionID IS NULL;
+
+                DELETE FROM Session
+                WHERE SessionID = @SessionID AND ParentSessionID IS NOT NULL";
+
+            var parameters = new[]{
+                new MySqlParameter("@SessionID", id)
+            };
+
+            var result = await db.ExecuteNonQueryAsync(query, parameters);
+
+            return result > 0;
+        }
+
         public async Task<Session?> GetSessionByIdAsync(int id)
         {
             var query = @"

@@ -57,6 +57,11 @@ namespace api.Services
             return await sr.EditScheduleAddAsync(recurring);
         }
 
+        public async Task<bool> SessionUnregisterAsync(int id)
+        {
+            return await sr.SessionUnregisterAsync(id);
+        }
+
         public async Task<List<Session>> SessionSearchAsync(SessionSearch request)
         {
             DateTime date = DateTime.Parse(request.Date);

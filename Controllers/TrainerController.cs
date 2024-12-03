@@ -45,5 +45,12 @@ namespace api.Controllers
             var result = await trainerService.GetTrainerAverageRatingAsync(id);
             return Ok(result);
         }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<bool>> TrainerRegister([FromBody] Trainer trainer)
+        {
+            bool result = await trainerService.RegisterTrainerAsync(trainer);
+            return result;
+        }
     }
 }

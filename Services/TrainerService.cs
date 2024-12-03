@@ -31,6 +31,11 @@ namespace api.Services
             return await tr.ApprovePendingTrainerAsync(trainerId);
         }
 
+        public async Task<bool> BanTrainerAsync(int trainerId)
+        {
+            return await tr.BanTrainerAsync(trainerId);
+        }
+
         public async Task<Trainer?> GetTrainerByIdAsync(int id)
         {
             return await tr.GetTrainerByIdAsync(id);
@@ -44,6 +49,11 @@ namespace api.Services
         public async Task<decimal> GetTrainerAverageRatingAsync(int id)
         {
             return await tr.GetTrainerAverageRatingAsync(id);
+        }
+
+        public async Task<bool> RegisterTrainerAsync(Trainer trainer)
+        {
+            return await tr.RegisterTrainerAsync(trainer.FirstName, trainer.LastName, trainer.Email, trainer.Phone, trainer.Bio, trainer.Password, (decimal)trainer.SessionPrice);
         }
     }
 }

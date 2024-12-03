@@ -22,6 +22,8 @@ namespace api.Services
         Task<bool> RegisterMemberForSessionAsync(int sessionId, int memberId, DateTime? date);
 
         Task<List<ScheduleEntry>> GetTrainerScheduleAsync(int trainerID);
+        Task<bool> SessionUnregisterAsync(int id);
+
 
         // Task<Session> UpdateSessionAsync(int id, Session updatedSession);
         // Task<bool> DeleteSessionAsync(int id);

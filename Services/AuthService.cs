@@ -29,7 +29,7 @@ namespace api.Services
             {
                 case "member":
                     var member = await mr.GetMemberByEmailAsync(userName);
-                    if (member != null && member.Password == password)
+                    if (member != null && member.Password == password && member.Banned == 0)
                     {
                         return (true, member.MemberID, "member");
                     }
@@ -39,7 +39,7 @@ namespace api.Services
                     }
                 case "trainer":
                     var trainer = await tr.GetTrainerByEmailAsync(userName);
-                    if (trainer != null && trainer.Password == password)
+                    if (trainer != null && trainer.Password == password && trainer.Banned == 0)
                     {
                         return (true, trainer.TrainerID, "trainer");
                     }

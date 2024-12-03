@@ -84,6 +84,14 @@ namespace api.Controllers
             var success = await sessionService.EditScheduleRemoveAsync(sessionID);
             return Ok(success);
         }
+
+        [HttpPut("unregister/{id}")]
+        public async Task<ActionResult> SessionUnregister(int id)
+        {
+            var success = await sessionService.SessionUnregisterAsync(id);
+            return Ok(success);
+        }
+
         [HttpPost("edit-schedule/add")]
         public async Task<ActionResult> EditScheduleAdd([FromBody] AddRecurring recurring)
         {

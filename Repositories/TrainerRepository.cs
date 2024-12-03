@@ -29,7 +29,9 @@ namespace api.Repositories
                 SessionPrice = reader.GetDecimal("SessionPrice"),
                 Phone = reader.GetString("Phone"),
                 Bio = reader.GetString("TrainerBio"),
-                ProfilePic = reader.GetString("TrainerPic")
+                ProfilePic = reader.GetString("TrainerPic"),
+                IsActive = reader.GetInt16("Active"),
+                Banned = reader.GetInt16("Banned")
             });
         }
         public async Task<Trainer?> GetTrainerByEmailAsync(string email)
@@ -49,7 +51,8 @@ namespace api.Repositories
                 SessionPrice = reader.GetDecimal("SessionPrice"),
                 Phone = reader.GetString("Phone"),
                 Bio = reader.GetString("TrainerBio"),
-                ProfilePic = reader.GetString("TrainerPic")
+                ProfilePic = reader.GetString("TrainerPic"),
+                Banned = reader.GetInt16("Banned")
             }, parameters);
             return trainer.FirstOrDefault();
         }
@@ -97,7 +100,6 @@ namespace api.Repositories
                 Bio = reader.GetString("TrainerBio"),
                 ProfilePic = reader.GetString("TrainerPic")
             }, parameters);
-            // System.Console.WriteLine(trainer);
             return trainers.FirstOrDefault();
         }
 
@@ -157,12 +159,53 @@ namespace api.Repositories
                 new MySqlParameter("@ID", id)
             };
             var avg = await db.ExecuteScalarAsync(query, parameters);
-            // System.Console.WriteLine(avg);
             if (avg == DBNull.Value)
             {
                 return 0;
             }
             return (decimal)avg;
+        }
+
+        public async Task<bool> BanTrainerAsync(int id)
+        {
+            string query = @"
+                UPDATE Trainer
+                SET Banned = CASE 
+                            WHEN Banned = 1 THEN 0 
+                            ELSE 1 
+                            END
+                WHERE TrainerID = @TrainerID;
+                ";
+
+            var parameters = new[]{
+                new MySqlParameter("@TrainerID", id)
+            };
+
+            var result = await db.ExecuteNonQueryAsync(query, parameters);
+            return result > 0;
+        }
+
+        public async Task<bool> RegisterTrainerAsync(string firstName, string lastName, string email, string phone, string bio, string password, decimal price)
+        {
+            var query = @"
+        INSERT INTO Trainer (Email, Password, FirstName, LastName, Phone, TrainerBio, SessionPrice)
+        VALUES (@Email, @Password, @FirstName, @LastName, @Phone, @Bio, @Price);
+        SELECT LAST_INSERT_ID();";
+            var parameters = new[]
+            {
+                new MySqlParameter("@Email", email),
+                new MySqlParameter("@Password", password),
+                new MySqlParameter("@FirstName", firstName),
+                new MySqlParameter("@LastName", lastName),
+                new MySqlParameter("@Phone", phone),
+                new MySqlParameter("@Bio", bio),
+                new MySqlParameter("@Price", price)
+            };
+
+            var result = await db.ExecuteNonQueryAsync(query, parameters);
+
+
+            return result > 0;
         }
     }
 }

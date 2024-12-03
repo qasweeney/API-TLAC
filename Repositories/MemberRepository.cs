@@ -23,7 +23,8 @@ namespace api.Repositories
                 Email = reader.GetString("Email"),
                 RegistrationDate = reader.GetDateTime("RegistrationDate"),
                 Password = reader.GetString("Password"),
-                Phone = reader.GetString("Phone")
+                Phone = reader.GetString("Phone"),
+                Banned = reader.GetInt16("Banned")
             });
         }
         public async Task<Member?> GetMemberByEmailAsync(string email)
@@ -40,7 +41,8 @@ namespace api.Repositories
                 FirstName = reader.GetString("FirstName"),
                 LastName = reader.GetString("LastName"),
                 Phone = reader.GetString("Phone"),
-                Password = reader.GetString("Password")
+                Password = reader.GetString("Password"),
+                Banned = reader.GetInt16("Banned")
             }, parameters);
             return member.FirstOrDefault();
         }
@@ -81,6 +83,25 @@ namespace api.Repositories
 
             var result = await db.ExecuteNonQueryAsync(query, parameters);
 
+
+            return result > 0;
+        }
+
+        public async Task<bool> BanMemberAsync(int id)
+        {
+            string query = @"
+                UPDATE Member
+                SET Banned = CASE 
+                            WHEN Banned = 1 THEN 0 
+                            ELSE 1 
+                            END
+                WHERE MemberID = @MemberID;
+                ";
+            var parameters = new[]{
+                new MySqlParameter("@MemberID", id)
+            };
+
+            var result = await db.ExecuteNonQueryAsync(query, parameters);
 
             return result > 0;
         }

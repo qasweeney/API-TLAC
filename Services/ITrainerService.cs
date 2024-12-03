@@ -16,6 +16,7 @@ namespace api.Services
         Task<Trainer?> GetTrainerByIdAsync(int id);
         Task<Trainer> UpdateTrainerProfileAsync(int id, string bio, string profilePic);
         Task<decimal> GetTrainerAverageRatingAsync(int id);
-
+        Task<bool> RegisterTrainerAsync(Trainer trainer);
+        Task<bool> BanTrainerAsync(int trainerId);
     }
 }

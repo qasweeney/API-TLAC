@@ -16,7 +16,8 @@ namespace api.Models
         public decimal? SessionPrice { get; set; }
         public string Phone { get; set; }
         public int? IsActive { get; set; }
-        public string Bio { get; set; }
-        public string ProfilePic { get; set; }
+        public string? Bio { get; set; }
+        public string? ProfilePic { get; set; }
+        public int? Banned { get; set; }
     }
 }

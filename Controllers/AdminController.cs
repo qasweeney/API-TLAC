@@ -15,13 +15,15 @@ namespace api.Controllers
     {
         private readonly IAdminService adminService;
         private readonly ITrainerService trainerService;
+        private readonly IMemberService memberService;
         private readonly IAuthService authService;
 
-        public AdminController(IAdminService admnServ, ITrainerService trainerServ, IAuthService authServ)
+        public AdminController(IAdminService admnServ, ITrainerService trainerServ, IAuthService authServ, IMemberService memberServ)
         {
             adminService = admnServ;
             trainerService = trainerServ;
             authService = authServ;
+            memberService = memberServ;
         }
 
         [HttpGet]
@@ -53,6 +55,41 @@ namespace api.Controllers
 
             var trainer = await trainerService.ApprovePendingTrainerAsync(id);
             return Ok(trainer);
+        }
+
+        [HttpPut("bantrainer/{id}")]
+        public async Task<ActionResult> ToggleBanTrainer([FromRoute] int id)
+        {
+            if (!Request.Cookies.TryGetValue("SessionToken", out var sessionToken))
+            {
+                return Unauthorized("Session token missing.");
+            }
+
+            var user = await authService.ValidateTokenAsync(sessionToken);
+            if (user == null || user.Value.userType != "Admin")
+            {
+                return Unauthorized("Invalid session token or insufficient permissions.");
+            }
+
+            var result = await trainerService.BanTrainerAsync(id);
+            return Ok(result);
+        }
+
+        [HttpPut("banmember/{id}")]
+        public async Task<ActionResult> ToggleBanMember([FromRoute] int id)
+        {
+            if (!Request.Cookies.TryGetValue("SessionToken", out var sessionToken))
+            {
+                return Unauthorized("Session token missing.");
+            }
+
+            var user = await authService.ValidateTokenAsync(sessionToken);
+            if (user == null || user.Value.userType != "Admin")
+            {
+                return Unauthorized("Invalid session token or insufficient permissions.");
+            }
+            var result = await memberService.BanMemberAsync(id);
+            return Ok(result);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<Trainer>> GetAdminById(int id)
