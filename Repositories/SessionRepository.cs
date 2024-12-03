@@ -413,7 +413,7 @@ namespace api.Repositories
                 var query = @"
                     INSERT INTO Session (DayOfWeek, Date, StartTime, SessionType, SessionStatus, Price, TrainerID, MemberID, Rating, ParentSessionID)
                     SELECT DayOfWeek, @Date, StartTime, SessionType, @SessionStatus, Price, TrainerID, @MemberID, Rating, @SessionID
-                    FROM session
+                    FROM Session
                     WHERE SessionID = @SessionID";
 
                 var parameters = new[]
@@ -431,7 +431,7 @@ namespace api.Repositories
             else
             {
                 var updateQuery = @"
-                    UPDATE session
+                    UPDATE Session
                     SET MemberID = @MemberID, SessionStatus = @NewStatus
                     WHERE SessionID = @SessionID AND MemberID IS NULL";
 

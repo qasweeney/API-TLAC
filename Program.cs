@@ -47,7 +47,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = configuration.GetConnectionString("DefaultConnection");
+var connectionString = configuration.GetConnectionString("JawsConnection");
 builder.Services.AddSingleton(new Database(connectionString));
 
 // Register each repository as scoped
