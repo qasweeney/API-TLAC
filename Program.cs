@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 
-// Add services to the container.
 
 builder.Services.AddControllers();
 
@@ -18,30 +17,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactAppPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Use your React app's URL
+        policy.WithOrigins("http://localhost:3000")
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials(); // Allow cookies
+              .AllowCredentials();
     });
 });
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("OpenPolicy", policy =>
-//     {
-//         policy.WithOrigins("http://localhost:3000")
-//               .AllowAnyMethod()
-//               .AllowAnyHeader()
-//               .AllowCredentials();
-//     });
-
-//     // options.AddPolicy("OpenPolicy",
-//     // builder =>
-//     // {
-//     //     builder.AllowAnyOrigin()
-//     //            .AllowAnyMethod()
-//     //            .AllowAnyHeader();
-//     // });
-// });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

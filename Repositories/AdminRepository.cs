@@ -18,7 +18,7 @@ namespace api.Repositories
 
         public async Task<List<Admin>> GetAllAdminsAsnyc()
         {
-            var query = "SELECT * FROM admin";
+            var query = "SELECT * FROM Admin";
             return await db.ExecuteQueryAsync(query, reader => new Admin
             {
                 AdminID = reader.GetInt32("AdminID"),
@@ -30,7 +30,7 @@ namespace api.Repositories
         }
         public async Task<Admin?> GetAdminByEmailAsync(string email)
         {
-            var query = "SELECT * FROM admin WHERE Email = @Email";
+            var query = "SELECT * FROM Admin WHERE Email = @Email";
             var parameters = new[]{
                 new MySqlParameter("@Email", email)
             };
@@ -47,7 +47,7 @@ namespace api.Repositories
 
         public async Task<Admin?> GetAdminByIdAsync(int id)
         {
-            var query = "SELECT * FROM admin WHERE AdminId = @id";
+            var query = "SELECT * FROM Admin WHERE AdminId = @id";
             var parameters = new[]{
                 new MySqlParameter("@id", id)
             };
